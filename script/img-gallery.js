@@ -1,4 +1,4 @@
-﻿/*
+/*
  * ---------------------------------------- *
  * Name: Application Template               *
  * Type: JavaScript                         *
@@ -10,14 +10,14 @@
  * ---------------------------------------- *
  */
 
-;(function($){
+; (function($){
     $.fn.imageGallery = function(options){ // extending jquery fn
 
         var defaults = {
             fade: false,
             animationSpeed : 500,
             slide: false,
-            slideDirection: "leftToRight",
+            slideDirection: "topToBottom",
             animationType: "easeOutExpo",
             zoomLightbox: false
             // animation type
@@ -30,16 +30,20 @@
 
             var $thumbnails,                                                // thumbnail items
                 $thumbnailImg,                                              // thumbnail item image
-                imgWidth,                                                   // image with
+                imgWidth,                                                   // image width
+                imgHeight,                                                  // image height
+                slideInDirection,                                           // slide in direction
                 src,                                                        // image src path
                 alt,                                                        // image alternative text
-                $imgGallery = $(this);                                      // gallery element
+                $imgGallery = $(this),                                      // gallery element
                 $imgContainer = $imgGallery.find('.img-container'),         // main focul image container
                 $focusImg = $imgContainer.find('img'),                      // main image
                 $topImg = $imgContainer.find('.top-img'),                   // top level image
                 $btmImg = $imgContainer.find('.btm-img'),                   // bottom level image
                 $activeImg,													// current active image
-                $nonActiveImg,													// non active image
+                $nonActiveImg,											    // non active image
+                $targetImg,                                                 // target slide image for slide
+                $previousActiveImg                                          // previously active feature image
 
             var gallery = {
                 setup: function(){
@@ -87,36 +91,89 @@
                     }
                 },
                 slide: function($thumbnailTrigger){
-                	activeImg = $imgContainer.find('img.active');
-
-                    if ($topImg.hasClass('active')){
-                        gallery.btmImgUpdt(); // update bottom image with attributes
-                    } else {
-                        gallery.topImgUpdt();
-                        $topImg.css({
-                            'right': imgWidth,
-                            'z-index': '1'
-                        });
-                        $btmImg.css('z-index', 0);
-                        $topImg.animate({
-                            'right': '-='+ imgWidth,
-                        }, config.animationSpeed, config.animationType, function (){
-                            gallery.setActive($thumbnailTrigger) // set active classes
-                        });
-                    }
+                	$activeImg = $imgContainer.find('img.active');
+                    gallery.setTargetImg();
+                    
+                    switch (config.slideDirection) {
+		                case 'rightToLeft':
+                            gallery.slideLeftToRight($thumbnailTrigger);
+		                break;
+		                case 'leftToRight':
+                            gallery.slideRightToLeft($thumbnailTrigger);
+		                break;
+		                case 'topToBottom':
+                            gallery.slideTopToBtm($thumbnailTrigger);
+		                break;
+		                case 'bottomToTop':
+                            gallery.slideBtmToTop($thumbnailTrigger);
+		                break;
+		                default:
+	                }
                 },
-                slideLeftToRight: function () {
-	                $btmImg.css({
-                        'right': imgWidth,
-                        'z-index': '1'
+                slideLeftToRight: function ($thumbnailTrigger) {
+                    $targetImg.css({
+                    'left': imgWidth,
+                    'z-index': '1'
                     });
-                    $topImg.css('z-index', 0);
-                    $btmImg.animate({
+                    
+                    gallery.setActiveAttr();
+                    
+                    $previousActiveImg.css('z-index', 0);
+                    
+                    $targetImg.animate({
+                        'left': '-='+ imgWidth,
+                    }, config.animationSpeed, config.animationType, function (){
+                        gallery.setActive($thumbnailTrigger) // set active classes
+                    });
+                },
+                slideRightToLeft: function ($thumbnailTrigger) {
+                    $targetImg.css({
+                    'right': imgWidth,
+                    'z-index': '1'
+                    });
+                    
+                    gallery.setActiveAttr();
+                    
+                    $previousActiveImg.css('z-index', 0);
+                    
+                    $targetImg.animate({
                         'right': '-='+ imgWidth,
                     }, config.animationSpeed, config.animationType, function (){
                         gallery.setActive($thumbnailTrigger) // set active classes
                     });
-                }
+                },
+                slideBtmToTop: function ($thumbnailTrigger) {
+                    $targetImg.css({
+                    'top': imgHeight,
+                    'z-index': '1'
+                    });
+                    
+                    gallery.setActiveAttr();
+                    
+                    $previousActiveImg.css('z-index', 0);
+                    
+                    $targetImg.animate({
+                        'top': '-='+ imgHeight,
+                    }, config.animationSpeed, config.animationType, function (){
+                        gallery.setActive($thumbnailTrigger) // set active classes
+                    });
+                },
+                slideTopToBtm: function ($thumbnailTrigger) {
+                    $targetImg.css({
+                    'top': '-=' + imgHeight,
+                    'z-index': '1'
+                    });
+                    
+                    gallery.setActiveAttr();
+                    
+                    $previousActiveImg.css('z-index', 0);
+                    
+                    $targetImg.animate({
+                        'top': imgHeight - imgHeight,
+                    }, config.animationSpeed, config.animationType, function (){
+                        gallery.setActive($thumbnailTrigger) // set active classes
+                    });
+                },
                 topImgUpdt: function() { // top image attribute update
                     $topImg.attr({
                         'src': src,
@@ -129,10 +186,28 @@
                         'alt': alt,
                     });
                 },
+                setActiveAttr: function () {
+                    if ($topImg.hasClass('active')){
+                        gallery.btmImgUpdt(); // update bottom image with attributes
+                    } else {
+                        gallery.topImgUpdt(); // update top image with attributes
+                    }
+                },
+                setTargetImg: function() {
+                    if ($topImg.hasClass('active')){
+                        $targetImg = $btmImg;
+                        $previousActiveImg = $topImg;
+                    } else {
+                        $targetImg = $topImg;
+                        $previousActiveImg = $btmImg;
+                    }
+                    console.log($targetImg);
+                },
                 atrUpdt: function($thumbnailTrigger) { // get image attributes
                     src = $thumbnailImg.attr('src'),
                     alt = $thumbnailImg.attr('alt'),
                     imgWidth = $topImg.width();
+                    imgHeight = $topImg.height();
 
                     switch (gallery.transitionType()) { // test for what transistion type is set
                         case 'fade':
@@ -174,17 +249,7 @@
                     $(".overlay").prepend('<img src="'+ src +'" alt="'+ alt +'"/>');
                 },
                 slideDirectionTest: function(){
-	                switch (config.slideDirection) {
-		                case 'leftToRight':
-		                break;
-		                case 'rightToLeft':
-		                break;
-		                case 'topToBottom':
-		                break;
-		                case 'bottomToTop':
-		                break;
-		                default:
-	                }
+	                // remove test delete if redunent
                 },
                 // testing methods
                 transitionType: function() { // transition type test

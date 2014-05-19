@@ -9,5 +9,8 @@
  */
 
  $(document).ready(function (){
- 	$('.img-gallery').imageGallery({ slide: true });
+ 	$('.img-gallery').imageGallery({
+        slide: true,
+        animationSpeed: 500
+    });
  });
