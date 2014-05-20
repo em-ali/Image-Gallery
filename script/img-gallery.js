@@ -53,6 +53,10 @@
                         $('body').prepend( '<span class="overlay"></strong>' );
                     }
 
+                    if (!(slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") ) { // check for correct options
+
+                    }
+
                     gallery.imgUpdt($thumbnails.first());
                     gallery.events();
                 },
@@ -93,11 +97,8 @@
                 slide: function($thumbnailTrigger){
                 	$activeImg = $imgContainer.find('img.active');
                     gallery.setTargetImg();
-                    
-//                    gallery.slideActions.common[config.slideDirection]($thumbnailTrigger);
-                    
+
                     var cssProps, animProp;
-                    
                     switch(config.slideDirection){
                         case "leftToRight":
                             cssProps = { 'left' : imgWidth , 'z-index' : '1'};
