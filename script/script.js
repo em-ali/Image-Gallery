@@ -11,6 +11,7 @@
  $(document).ready(function (){
  	$('.img-gallery').imageGallery({
         slide: true,
-        animationSpeed: 500
+        animationSpeed: 500,
+        slideDirection: "bottomToTop"
     });
  });

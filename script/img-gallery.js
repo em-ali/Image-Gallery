@@ -15,9 +15,9 @@
 
         var defaults = {
             fade: false,
-            animationSpeed : 500,
+            animationSpeed : 400,
             slide: false,
-            slideDirection: "topToBottom",
+            slideDirection: "rightToLeft",
             animationType: "easeOutExpo",
             zoomLightbox: false
             // animation type
@@ -94,85 +94,54 @@
                 	$activeImg = $imgContainer.find('img.active');
                     gallery.setTargetImg();
                     
-                    switch (config.slideDirection) {
-		                case 'rightToLeft':
-                            gallery.slideLeftToRight($thumbnailTrigger);
-		                break;
-		                case 'leftToRight':
-                            gallery.slideRightToLeft($thumbnailTrigger);
-		                break;
-		                case 'topToBottom':
-                            gallery.slideTopToBtm($thumbnailTrigger);
-		                break;
-		                case 'bottomToTop':
-                            gallery.slideBtmToTop($thumbnailTrigger);
-		                break;
-		                default:
-	                }
+//                    gallery.slideActions.common[config.slideDirection]($thumbnailTrigger);
+                    
+                    var cssProps, animProp;
+                    
+                    switch(config.slideDirection){
+                        case "leftToRight":
+                            cssProps = { 'left' : imgWidth , 'z-index' : '1'};
+                            animProp = {'left' : '-=' + imgWidth  };
+                            break;
+                        case "rightToLeft":
+                            cssProps = { 'right' : imgWidth , 'z-index' : '1'};
+                            animProp = {'right' : '-=' + imgWidth  };
+                            break;
+                        case "bottomToTop":
+                            cssProps = { 'top' : imgHeight, 'z-index' : '1' }
+                            animProp = { 'top' : '-=' + imgHeight }
+                            break;
+                        case "topToBottom":
+                            cssProps = { 'top' : '-=' + imgHeight, 'z-index' : '1' }
+                            animProp = { 'top' : imgHeight - imgHeight }
+                            break;
+                    }
+                    
+                    gallery.makeSlide(cssProps, animProp, $thumbnailTrigger);  
                 },
-                slideLeftToRight: function ($thumbnailTrigger) {
-                    $targetImg.css({
-                    'left': imgWidth,
-                    'z-index': '1'
-                    });
-                    
-                    gallery.setActiveAttr();
-                    
-                    $previousActiveImg.css('z-index', 0);
-                    
-                    $targetImg.animate({
-                        'left': '-='+ imgWidth,
-                    }, config.animationSpeed, config.animationType, function (){
-                        gallery.setActive($thumbnailTrigger) // set active classes
-                    });
+                makeSlide: function (cssProp, animProp, $thumbnailTrigger){
+                        $targetImg.css(cssProp);
+
+                        gallery.setActiveAttr();
+
+                        $previousActiveImg.css('z-index', 0);
+
+                        $targetImg.animate(animProp, config.animationSpeed, config.animationType, function (){
+                            gallery.setActive($thumbnailTrigger); // set active classes
+                        });
                 },
-                slideRightToLeft: function ($thumbnailTrigger) {
-                    $targetImg.css({
-                    'right': imgWidth,
-                    'z-index': '1'
-                    });
-                    
-                    gallery.setActiveAttr();
-                    
-                    $previousActiveImg.css('z-index', 0);
-                    
-                    $targetImg.animate({
-                        'right': '-='+ imgWidth,
-                    }, config.animationSpeed, config.animationType, function (){
-                        gallery.setActive($thumbnailTrigger) // set active classes
-                    });
-                },
-                slideBtmToTop: function ($thumbnailTrigger) {
-                    $targetImg.css({
-                    'top': imgHeight,
-                    'z-index': '1'
-                    });
-                    
-                    gallery.setActiveAttr();
-                    
-                    $previousActiveImg.css('z-index', 0);
-                    
-                    $targetImg.animate({
-                        'top': '-='+ imgHeight,
-                    }, config.animationSpeed, config.animationType, function (){
-                        gallery.setActive($thumbnailTrigger) // set active classes
-                    });
-                },
-                slideTopToBtm: function ($thumbnailTrigger) {
-                    $targetImg.css({
-                    'top': '-=' + imgHeight,
-                    'z-index': '1'
-                    });
-                    
-                    gallery.setActiveAttr();
-                    
-                    $previousActiveImg.css('z-index', 0);
-                    
-                    $targetImg.animate({
-                        'top': imgHeight - imgHeight,
-                    }, config.animationSpeed, config.animationType, function (){
-                        gallery.setActive($thumbnailTrigger) // set active classes
-                    });
+                slideActions: {
+                    common: function (cssProp, animProp, $thumbnailTrigger){
+                        $targetImg.css(cssProp);
+
+                        gallery.setActiveAttr();
+
+                        $previousActiveImg.css('z-index', 0);
+
+                        $targetImg.animate(animProp, config.animationSpeed, config.animationType, function (){
+                            gallery.setActive($thumbnailTrigger) // set active classes
+                        });
+                    }
                 },
                 topImgUpdt: function() { // top image attribute update
                     $topImg.attr({
