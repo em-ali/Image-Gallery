@@ -1,13 +1,23 @@
 /*
  * ---------------------------------------- *
- * Name: Application Template               *
+ * Name: Image Gallery                      *
  * Type: JavaScript                         *
  * Version: 1.0.0                           *
- * Author: Mehmud		                    *
+ * Author: Mehmud Ali                       *
  * Status: Development                      *
  * Requisites: >=jquery-1.11.0.min.js       *
- *             chg.Other(opt)               *
  * ---------------------------------------- *
+ */
+
+/* additions in revision
+ *
+ * FEATURE: Slide with settings     DONE
+ * FEATURE: Fade with settings      DONE
+ * FEATURE: as jQuery plugin        DONE
+ * FEATURE: Transition types        PARTIAL
+ * FEATURE: lightbox integration    TODO
+ * BUG:     Exception handling for user input for animation type, and slide direction   TODO
+ *
  */
 
 ; (function($){
@@ -53,9 +63,9 @@
                         $('body').prepend( '<span class="overlay"></strong>' );
                     }
 
-                    if (!(slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") ) { // check for correct options
-
-                    }
+//                    if (!(slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") ) { // check for correct options
+//
+//                    }
 
                     gallery.imgUpdt($thumbnails.first());
                     gallery.events();
