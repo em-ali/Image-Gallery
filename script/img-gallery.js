@@ -23,18 +23,23 @@
 ; (function($){
     $.fn.imageGallery = function(options){ // extending jquery fn
 
+        // valid animation algorithms
+        var ANIM_TYPE = ["easeInSine", "easeOutSine", "easeInOutSine", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInBack", "easeOutBack", "easeInOutBack", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBounce", "easeOutBounce", "easeInOutBounce"];
+
         var defaults = {
             fade: false,
             animationSpeed : 400,
             slide: false,
             slideDirection: "rightToLeft",
-            animationType: "easeOutExpo",
             zoomLightbox: false
-            // animation type
-            // easeInSine, easeOutSine, easeInOutSine, easeInQuad, easeOutQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, easeInQuint, easeOutQuint, easeInOutQuint, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeInBounce, easeOutBounce, easeInOutBounce
         };
 
+        options.animationType = ANIM_TYPE.indexOf(options.animationType) == -1 ? ANIM_TYPE[0] : options.animationType; // check animation type is valid
+
+
         return this.each(function(){ // return this for jquery chaining
+
+
 
             var config = $.extend({}, defaults, options); // options override defaults
 
@@ -62,6 +67,8 @@
                     if (gallery.lightboxTest()) {
                         $('body').prepend( '<span class="overlay"></strong>' );
                     }
+
+
 
 //                    if (!(slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") || (slideDirection = "rightToLeft") ) { // check for correct options
 //
@@ -240,6 +247,9 @@
                 },
                 lightboxTest: function () { // check
                     return (config.zoomLightbox) ? true : false ;
+                },
+                errorHandling: function() {
+
                 }
             }
             gallery.setup();
