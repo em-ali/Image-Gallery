@@ -5,7 +5,8 @@
  * Version: 1.0.0                           *
  * Author: Mehmud Ali                       *
  * Status: Development                      *
- * Requisites: >=jquery-1.11.0.min.js       *
+ * Requisites: >=jquery-1.11.0.min.js,      *
+ *               jquery.easing.1.3.js       *
  * ---------------------------------------- *
  */
 
@@ -14,32 +15,34 @@
  * FEATURE: Slide with settings     DONE
  * FEATURE: Fade with settings      DONE
  * FEATURE: as jQuery plugin        DONE
- * FEATURE: Transition types        PARTIAL
+ * FEATURE: Transition types        DONE
  * FEATURE: lightbox integration    TODO
  * FEATURE: Image preloading        TODO
  * FEATURE: multimedia support      TODO
  * FEATURE: Vertical thumbs slider  TODO
- * BUG:     Exception handling for user input for animation type, and slide direction   TODO
- * BUG:     First load doesn't prohibit active slide from animating                     TODO
- *
+ * BUG:     Exception handling for user input for animation type, and slide direction   DONE
+ * BUG:     Exception handling for slide direction setting                              DONE
+ * BUG:     First load doesn't prohibit active slide from animating                     DONE
+ * BUG:     IE8 - IE7 erroring with indexOf                                             DONE
  */
 
 ; (function($){
     $.fn.imageGallery = function(options){ // extending jquery fn
 
         // valid animation algorithms
-        var ANIM_TYPE = ["easeInSine", "easeOutSine", "easeInOutSine", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInBack", "easeOutBack", "easeInOutBack", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBounce", "easeOutBounce", "easeInOutBounce"];
+        var ANIM_TYPE = ["easeInSine", "easeOutSine", "easeInOutSine", "easeInQuad", "easeOutQuad", "easeInOutQuad", "easeInCubic", "easeOutCubic", "easeInOutCubic", "easeInQuart", "easeOutQuart", "easeInOutQuart", "easeInQuint", "easeOutQuint", "easeInOutQuint", "easeInExpo", "easeOutExpo", "easeInOutExpo", "easeInCirc", "easeOutCirc", "easeInOutCirc", "easeInBack", "easeOutBack", "easeInOutBack", "easeInElastic", "easeOutElastic", "easeInOutElastic", "easeInBounce", "easeOutBounce", "easeInOutBounce"],
+            SLIDE_DIRECTION = ["rightToLeft", "bottomToTop", "leftToRight", "topToBottom"];
 
         var defaults = {
             fade: false,
             animationSpeed : 400,
             slide: false,
-            slideDirection: "rightToLeft",
             zoomLightbox: false
         };
 
-        options.animationType = ANIM_TYPE.indexOf(options.animationType) == -1 ? ANIM_TYPE[0] : options.animationType; // check animation type is valid
-
+        // exception handling for animation type & slide direction
+        options.animationType = $.inArray(options.animationType, ANIM_TYPE) == -1 ? ANIM_TYPE[16] : options.animationType; // check animation type is valid
+        options.slideDirection = $.inArray(options.slideDirection, SLIDE_DIRECTION) == -1 ? SLIDE_DIRECTION[0] : options.slideDirection; // check slide direction is valid
 
         return this.each(function(){ // return this for jquery chaining
 
@@ -58,16 +61,17 @@
                 $btmImg = $imgContainer.find('.btm-img'),                   // bottom level image
                 $activeImg,													// current active image
                 $targetImg,                                                 // target slide image for slide
-                $previousActiveImg;                                          // previously active feature image
+                $previousActiveImg;                                         // previously active feature image
 
             var gallery = {
                 init: function () {
                     gallery.setup();
-                    gallery.imgUpdt($thumbnails.first());
                     gallery.events();
                 },
                 setup: function() {
                     $thumbnails = $imgGallery.find('.thumb-item');
+
+                    gallery.imgUpdt($thumbnails.first());
 
                     if (gallery.factory.lightboxTest()) {
                         $('body').prepend('<span class="overlay"></strong>');
@@ -182,7 +186,6 @@
                         $targetImg = $topImg;
                         $previousActiveImg = $btmImg;
                     }
-                    //console.log($targetImg);
                 },
                 attrUpdt: function($thumbnailTrigger) { // get image attributes
                     src = $thumbnailImg.attr('src');
@@ -204,8 +207,7 @@
                 },
                 dfltattrUpdt: function($thumbnailTrigger) { // default case for image update
                     gallery.topImgUpdt(src, alt);
-                    gallery.setActive($thumbnailImg, $thumbnailTrigger);
-
+                    gallery.setActive($thumbnailTrigger);
                 },
                 setActive: function($thumbnailTrigger) {
                     $thumbnails.removeClass('active');
