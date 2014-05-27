@@ -12,6 +12,7 @@
  	$('.img-gallery').imageGallery({
         slide: true,
         animationSpeed: 400,
-        slideDirection: "topToBottom"
+        slideDirection: "topToBottom",
+        zoomLightbox: true
     });
  });

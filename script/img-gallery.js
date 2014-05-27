@@ -20,6 +20,7 @@
  * FEATURE: Image preloading        TODO
  * FEATURE: multimedia support      TODO
  * FEATURE: Vertical thumbs slider  TODO
+ * FEATURE: Auto rotate  TODO
  * BUG:     Exception handling for user input for animation type, and slide direction   DONE
  * BUG:     Exception handling for slide direction setting                              DONE
  * BUG:     First load doesn't prohibit active slide from animating                     DONE
@@ -59,9 +60,15 @@
                 $focusImg = $imgContainer.find('img'),                      // main image
                 $topImg = $imgContainer.find('.top-img'),                   // top level image
                 $btmImg = $imgContainer.find('.btm-img'),                   // bottom level image
+                $lightBox,                                                  // lightbox dom element
+                lbHeight,                                                    // lightbox height
+                lbWidth,                                                    // lightbox width
+                topOffSet,                                                  // lightbox left offset
+                leftOffSet,                                                 // lightbox top offset
                 $activeImg,													// current active image
                 $targetImg,                                                 // target slide image for slide
                 $previousActiveImg;                                         // previously active feature image
+
 
             var gallery = {
                 init: function () {
@@ -74,7 +81,8 @@
                     gallery.imgUpdt($thumbnails.first());
 
                     if (gallery.factory.lightboxTest()) {
-                        $('body').prepend('<span class="overlay"></strong>');
+                        $('body').prepend('<span class="overlay"></span><div class="lightbox"><img src="" alt=""/></div>');
+                        $imgContainer.prepend('<div class="zoom-overlay"><div><span></span></div></div>')
                     }
                 },
                 events: function() {
@@ -87,10 +95,17 @@
                     });
 
                     $focusImg.click(function() {
+                        $lightBox = $('.lightbox');
                         if ($('overlay:hidden')) { // check if modal window visible
-                            gallery.lightbox($lightboxTrigger);
+                            gallery.lightbox($(this));
                         }
                     });
+
+                    if (gallery.factory.lightboxTest()) {
+                        $imgContainer.hover(function(){
+                            $('.zoom-overlay').fadeToggle();
+                        });
+                    }
                 },
                 imgUpdt: function($thumbnailTrigger) { // select thumnail item image
                     $thumbnailImg = $thumbnailTrigger.children('img'); // clicked thumbnail image element
@@ -229,8 +244,22 @@
                     }
                 },
                 lightbox: function($lightboxTrigger) {
-                    gallery.attrUpdt($lightboxTrigger);
-                    $(".overlay").prepend('<img src="' + src + '" alt="' + alt + '"/>');
+                    $('.lightbox img').attr({
+                        'src': src,
+                        'alt': alt
+                    });
+
+                    lbHeight = $lightBox.height();
+                    lbWidth = $lightBox.width();
+                    topOffSet = lbHeight / 2;
+                    leftOffSet = lbWidth /2;
+
+                    $lightBox.css({
+                        'margin-top': "-=" + topOffSet,
+                        'margin-left': "-=" + leftOffSet,
+                    });
+
+                    $('.overlay, .lightbox').fadeIn();
                 },
                 // factory methods
                 factory: {

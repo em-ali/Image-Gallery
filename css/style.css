@@ -8,8 +8,9 @@ html, body { margin: 0; padding: 0;	font-family: 'Raleway' Helvetica, Arial, san
 .cf { zoom: 1; }
 
 body.window-blur { -webkit-filter: blur(3px); filter: blur(3px); -webkit-transition: .9s -webkit-filter linear; transition: .9s filter linear}
-.overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; display: none; background-color: rgba(255,255,255,0.4); z-index: 5; }
-.overlay img { position: absolute; top: 50%; left: 50%; margin-top: 5%; max-height: 90%; display: none; z-index: 6; }
+.overlay { position: fixed; top: 0; left: 0; bottom: 0; right: 0; display: none; background-color: rgba(0,0,0,0.4); z-index: 5; text-align: center; }
+.lightbox { position: fixed; top: 50%; left: 50%; display: none; z-index: 6; }
+.lightbox img { float: left; display: block; }
 .wrapper { margin: auto; max-width: 1000px; padding: 0 3%; }
 
 h1 { margin: 42px 0 21px 0; font-size: 3.7em; font-weight: 500; }
@@ -18,6 +19,9 @@ div.img-gallery { padding: 10px 0; float: left; }
 
 div.img-container { float: left; border: 5px solid #fff; width: 76%; box-shadow: 0 0 5px rgba(47, 47, 47, 0.2); height: 270px; overflow: hidden; box-sizing: border-box; position: relative; }
 
+div.img-container .zoom-overlay { background-color: rgba(0,0,0,0.4); position: absolute; width: 100%; height: 100%; z-index: 2; display: none; }
+div.img-container .zoom-overlay > div { position: relative; width: 100%; height: 100%; }
+div.img-container .zoom-overlay > div > span { position: absolute; background: url(/images/zoom.png) no-repeat transparent center center; width: 96px; height: 96px; left: 50%; top: 50%; margin-left: -48px; margin-top: -48px; }
 
 div.img-container img { width: 100%; position: absolute; top: 0; }
 div.img-container img.top-tier { z-index: 1; }
